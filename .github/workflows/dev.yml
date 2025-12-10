@@ -15,6 +15,6 @@ jobs:
         with:
             environment: "dev"
             aws-assume-role: "arn:aws:iam::180901265306:role/github-actions-nickfassis-cicd"
-            aws-region: "us-west-1"
+            aws-region: "us-east-1"
             aws-statefile-s3-bucket: "nickfassis-us-east-1-terraform-startefile"
             aws-statefile-dynamodb-table: "nickfassis-us-east-1-terraform-lock"
