@@ -1,3 +1,1 @@
-provider "aws" {
-    us-east-1
-}
+provider "aws" {}
