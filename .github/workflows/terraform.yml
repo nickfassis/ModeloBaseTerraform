@@ -48,7 +48,7 @@ jobs:
           run: |
             cd infra && terraform init \
               -backend-config="bucket=${{ inputs.aws-statefile-s3-bucket }}" \
-              -backend-config="key=${{ github.event.repository.name }}/terraform.tfstate" \ # caminho do statefile no s3 em caso de erro remover o que está depois de/
+              -backend-config="key=${{ github.event.repository.name }}" \ # caminho do statefile no s3 em caso de erro remover o que está depois de/
               -backend-config="region=${{ inputs.aws-region }}" \
               -backend-config="dynamodb_table=${{ inputs.aws-statefile-dynamodb-table }}"
         
