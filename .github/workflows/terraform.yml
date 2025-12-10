@@ -1,0 +1,72 @@
+name: "Terraform CICD"
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      aws-assume-role:
+        required: true
+        type: string
+      aws-region:
+        required: true
+        type: string
+      aws-statefile-s3-bucket:
+        required: true
+        type: string
+      aws-statefile-dynamodb-table:
+        required: true
+        type: string
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+    
+    steps:
+        - name: Checkout code
+          uses: actions/checkout@v4 #actions do próprio GitHub
+        
+        - name: Setup Terraform
+          uses: hashicorp/setup-terraform@v3 #actions do próprio GitHub
+          with:
+            terraform_version: 1.8.3
+        
+        - name: Configure AWS Credentials
+          uses: aws-actions/configure-aws-credentials@v4 #actions do próprio GitHub
+          with:
+            role-to-assume: ${{ inputs.aws-assume-role }}
+            role-session-name: github-actions-terraform
+            aws-region: ${{ inputs.aws-region }}
+        
+        - name: Terraform Initialize
+          id: terraform-init
+          run: |
+            cd infra && terraform init \
+              -backend-config="bucket=${{ inputs.aws-statefile-s3-bucket }}" \
+              -backend-config="key=${{ github.event.repository.name }}/terraform.tfstate" \ # caminho do statefile no s3 em caso de erro remover o que está depois de/
+              -backend-config="region=${{ inputs.aws-region }}" \
+              -backend-config="dynamodb_table=${{ inputs.aws-statefile-dynamodb-table }}"
+        
+        - name: Terraform Validate
+          id: terraform-validate
+          run: |
+            cd infra && terraform validate
+
+        - name: Terraform Plan
+          id: terraform-plan
+          run: |
+            cd infra && 
+            terraform workspace select ${{ inputs.environment }} || terraform workspace new ${{ inputs.environment }} &&
+            terraform plan -var-file="./envs/${{ inputs.environment }}/terraform..tfvars" -out="${{ inputs.environment }}.plan"
+
+        - name: Terraform Apply
+          id: terraform-apply
+          run: 
+            cd infra && 
+            terraform workspace select ${{ inputs.environment }} || terraform workspace new ${{ inputs.environment }} &&
+            terraform apply "${{ inputs.environment }}.plan"
