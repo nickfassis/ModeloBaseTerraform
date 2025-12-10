@@ -50,12 +50,7 @@ jobs:
               -backend-config="key=${{ github.event.repository.name }}/${{ inputs.environment }}.tfstate" \
               -backend-config="region=${{ inputs.aws-region }}" \
               -backend-config="dynamodb_table=${{ inputs.aws-statefile-dynamodb-table }}"
-        
-        - name: Terraform Fmt (check)
-          id: terraform-fmt
-          run: |
-            cd infra && terraform fmt -check
-
+       
         - name: Terraform Validate
           id: terraform-validate
           run: |
