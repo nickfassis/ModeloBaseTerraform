@@ -1,4 +1,4 @@
-name: "Terraform CICD"
+name: "Terraform CD"
 
 on:
   workflow_call:
