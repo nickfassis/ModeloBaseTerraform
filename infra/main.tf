@@ -64,7 +64,6 @@ resource "aws_s3_object" "app_html" {
     key          = basename(each.key)
     source       = "../app/${each.key}"
     content_type = "text/html"
-    acl          = "public-read"
     etag         = filemd5("../app/${each.key}")
 
     depends_on = [aws_s3_bucket_policy.public]
