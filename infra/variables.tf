@@ -20,8 +20,8 @@ variable "error_document" {
     default     = "error.html"
 }
 
-variable "cors_allowed_origin" {
+variable "allowed_origin" {
     type        = string
-    description = "Origin (scheme + host) allowed by S3 CORS, e.g. http://dev.faveni.ministrare.work"
+    description = "Hostname que poderá acessar via CDN/CloudFront (ex.: dev.faveni.ministrare.work)"
     default     = null
 }
