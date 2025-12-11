@@ -2,6 +2,17 @@ resource "aws_s3_bucket" "bucket" {
     bucket = var.bucket_name
 }
 
+# Allow public policy attachment for website hosting
+resource "aws_s3_bucket_public_access_block" "this" {
+    count  = var.enable_website_hosting ? 1 : 0
+    bucket = aws_s3_bucket.bucket.id
+
+    block_public_acls       = false
+    block_public_policy     = false
+    ignore_public_acls      = false
+    restrict_public_buckets = false
+}
+
 # Configure static website hosting
 resource "aws_s3_bucket_website_configuration" "website" {
     count  = var.enable_website_hosting ? 1 : 0
@@ -38,6 +49,7 @@ resource "aws_s3_bucket_policy" "public" {
     count  = var.enable_website_hosting ? 1 : 0
     bucket = aws_s3_bucket.bucket.id
     policy = data.aws_iam_policy_document.public_read[0].json
+    depends_on = [aws_s3_bucket_public_access_block.this]
 }
 
 # Upload all HTML files from ../app to the bucket
