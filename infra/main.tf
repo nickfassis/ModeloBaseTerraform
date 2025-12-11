@@ -2,6 +2,20 @@ resource "aws_s3_bucket" "bucket" {
     bucket = var.bucket_name
 }
 
+# CORS to allow your domain to access S3 website
+resource "aws_s3_bucket_cors_configuration" "cors" {
+    count  = var.cors_allowed_origin != null ? 1 : 0
+    bucket = aws_s3_bucket.bucket.id
+
+    cors_rule {
+        allowed_headers = ["*"]
+        allowed_methods = ["GET", "HEAD"]
+        allowed_origins = [var.cors_allowed_origin]
+        expose_headers  = ["ETag"]
+        max_age_seconds = 300
+    }
+}
+
 # Allow public policy attachment for website hosting
 resource "aws_s3_bucket_public_access_block" "this" {
     count  = var.enable_website_hosting ? 1 : 0
@@ -66,5 +80,5 @@ resource "aws_s3_object" "app_html" {
     content_type = "text/html"
     etag         = filemd5("../app/${each.key}")
 
-    depends_on = [aws_s3_bucket_policy.public]
+    depends_on = [aws_s3_bucket_policy.public, aws_s3_bucket_cors_configuration.cors]
 }

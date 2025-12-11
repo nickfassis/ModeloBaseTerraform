@@ -19,3 +19,9 @@ variable "error_document" {
     description = "Error document for S3 static website"
     default     = "error.html"
 }
+
+variable "cors_allowed_origin" {
+    type        = string
+    description = "Origin (scheme + host) allowed by S3 CORS, e.g. http://dev.faveni.ministrare.work"
+    default     = null
+}
