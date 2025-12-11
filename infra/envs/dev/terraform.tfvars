@@ -1,1 +1,1 @@
-bucket_name="dev-us-east-1-buildrun-pipeline-faveni-ministrare"
+bucket_name="dev-us-east-1-buildrun-pipeline-ministrare"
