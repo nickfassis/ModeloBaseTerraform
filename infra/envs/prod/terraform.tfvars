@@ -1,2 +1,1 @@
 bucket_name="prod-us-east-1-buildrun-pipeline-faveni-ministrare"
-allowed_origin="prod.faveni.ministrare.work"

@@ -19,9 +19,3 @@ variable "error_document" {
     description = "Error document for S3 static website"
     default     = "error.html"
 }
-
-variable "allowed_origin" {
-    type        = string
-    description = "Hostname que poderá acessar via CDN/CloudFront (ex.: dev.faveni.ministrare.work)"
-    default     = null
-}
